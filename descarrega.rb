@@ -1,22 +1,17 @@
 #!/usr/bin/env ruby
+# encoding: UTF-8
 require 'nokogiri'
 require 'open-uri'
 require 'net/http'
 require 'yaml'
 
-$conf = YAML.load(File.open('config.yaml'))
 
 def llista_programes()
 	llista = Array.new
 	dades_extraure = ['category', 'titol']
-	@doc = Nokogiri::XML(open('http://www.super3.cat/feeds/programes/seriesSuper3.jsp?format=xml&amp;device=iphone&amp;pagina=0&amp;itemsPagina=100'))
+	@doc = Nokogiri::XML(open('http://www.super3.cat/feeds/programes/seriesSuper3.jsp?format=xml&amp;device=iphone&amp;pagina=0&amp;itemsPagina=40'))
 	@doc.css("item").each() do |item|
-#		printf("=== %-4s: %s : %s\n", item['idint'],item.css('titol').text().strip, item.css('category')[0].text().strip)
-		#puts item
 		llista.push(item.css('category')[0].text().strip)
-#		dades_extraure.each do |dada|
-#			dades_episodi[dada] = item.css(dada).text().strip
-#		end
 	end
 	return llista
 end
@@ -24,7 +19,7 @@ end
 
 def ollista_programes()
 	Net::HTTP.start("www.super3.cat") do | http |
-		resp = http.get("/feeds/programes/seriesSuper3.jsp?format=xml&amp;device=iphone&amp;pagina=0&amp;itemsPagina=100")
+		resp = http.get("/feeds/programes/seriesSuper3.jsp?format=xml&amp;device=iphone&amp;pagina=0&amp;itemsPagina=20")
 		programes_xml=resp.body
 	end
 	return llista
@@ -32,7 +27,7 @@ end
 
 def llista_episodis(codiserie)
 	llista = Array.new
-	@doc = Nokogiri::XML(open("http://www.super3.cat/searcher/super3/searching.jsp?format=MP4&catBusca=#{codiserie}&presentacion=xml&pagina=1&itemsPagina=200"))
+	@doc = Nokogiri::XML(open("http://www.super3.cat/searcher/super3/searching.jsp?format=MP4&catBusca=#{codiserie}&presentacion=xml&pagina=1&itemsPagina=20"))
 	@doc.css("item").each() do |item|
 		# printf("=== %-4s: %s\n", item['idint'],item.css('titol').text().strip)
 		#puts item
@@ -97,22 +92,43 @@ def descarrega_episodi(dades_episodi)
 	end
 end
 
+puts "#{Time.now()} Començant sessió de descarrega"
+puts "  Arguments: " << YAML.dump(ARGV)
+
 puts ARGV.length
+if (ARGV.length > 0 && ARGV[0] == "-c")
+	ARGV.shift
+	conf_file = ARGV.shift
+else
+	conf_file = 'config.yaml'
+end
+$conf = YAML.load(File.open(conf_file))
+STDOUT.flush
 if (ARGV.length == 0)
 	puts "LLista de programes"
 	llista_programes().each() do |codiserie|
 		puts " Serie: #{codiserie}"
+		STDOUT.flush
 		llista_episodis(codiserie).each() do |programid|
 			puts "  Programa: #{programid}"
 			descarrega_dades_episodi(programid) if not tengui(programid)
+			STDOUT.flush
 		end
 	end
 else
-	episodis = llista_episodis(ARGV[0])
-	puts YAML.dump(episodis)
-	puts " Serie: #{ARGV[0]}"
-	episodis.each() do |programid|
-		puts "  Programa: #{programid}"
+	what=ARGV.shift
+	if what == "-s"
+		serie = ARGV.shift
+		episodis = llista_episodis(serie)
+		puts YAML.dump(episodis)
+		puts " Serie: #{serie}"
+		episodis.each() do |programid|
+			puts "  Programa: #{programid}"
+			descarrega_dades_episodi(programid) if not tengui(programid)
+		end
+	elsif what =="-f"
+		programid = ARGV.shift
 		descarrega_dades_episodi(programid) if not tengui(programid)
 	end
 end
+puts "#{Time.now()} Finalitzada sessió de descarrega"
