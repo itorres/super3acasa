@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# encoding: UTF-8
+# encoding: utf-8
 require 'nokogiri'
 require 'open-uri'
 require 'net/http'
@@ -9,7 +9,7 @@ require 'yaml'
 def llista_programes()
 	llista = Array.new
 	dades_extraure = ['category', 'titol']
-	@doc = Nokogiri::XML(open('http://www.super3.cat/feeds/programes/seriesSuper3.jsp?format=xml&amp;device=iphone&amp;pagina=0&amp;itemsPagina=40'))
+	@doc = Nokogiri::XML(open('http://www.super3.cat/feeds/programes/seriesSuper3.jsp?format=xml&amp;device=iphone&amp;pagina=0&amp;itemsPagina=60'))
 	@doc.css("item").each() do |item|
 		llista.push(item.css('category')[0].text().strip)
 	end
@@ -60,8 +60,9 @@ begin
 	infofile = File.join($conf[:download_dir], "#{programid}.xml")
 	open(infofile, "w") { |f| @doc.write_xml_to f }
 	descarrega_episodi(dades_episodi)
-rescue 
-  puts "  !! Exception in descarrega_dades: #{programid} "
+rescue Exception => e
+    puts "  !! Unhandled exception in descarrega_dades: #{programid} "
+    raise e
 end
 end
 
