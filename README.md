@@ -9,3 +9,11 @@ Cal copiar l'arxiu `config.yaml.example` a `config.yaml` i crear els directoris 
 # Estat
 
 La primera versió és molt guarra però funciona. Cal refactoritzar bastant i agrupar les funcionalitats en una sola aplicació. Tampoc estaria malament fer una interficie gràfica.
+
+# Docker
+
+Executar amb
+
+```
+docker run -ti --rm -v $(pwd):/usr/src/app -v /directori/super3:/directori/super3 itorres/super3 ./descarrega.rb
+```
