@@ -1,19 +1,3 @@
-# Super3 a casa
+# tv3dl
 
-Petita aplició programada en Ruby per descarregar vídeos del club Super3.
-
-Es connecta a adreces que fa servir l'aplicació Super3 per iPad per rebre informació sobre els programes i els descarrega en format MP4.
-
-Cal copiar l'arxiu `config.yaml.example` a `config.yaml` i crear els directoris de descarrega i indexació.
-
-# Estat
-
-La primera versió és molt guarra però funciona. Cal refactoritzar bastant i agrupar les funcionalitats en una sola aplicació. Tampoc estaria malament fer una interficie gràfica.
-
-# Docker
-
-Executar amb
-
-```
-docker run -ti --rm -v $(pwd):/usr/src/app -v /directori/super3:/directori/super3 itorres/super3 ./descarrega.rb
-```
+Small tool to download videos from ccma.cat (TV3, Super3, 3alacarta)
