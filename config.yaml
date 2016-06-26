@@ -1,8 +1,9 @@
 ---
-:download_dir: /Volumes/Verdura/Media/In/super3/d
-:index_dir: /Volumes/Verdura/Media/In/super3/censor
-:publish_dir: /Volumes/Verdura/Media/Video/Infantil
-:publish:
+dirs:
+  download: /tmp/tv3/d
+  index: /tmp/tv3/censor
+  publish: /Volumes/Verdura/Media/Video/Infantil
+publish:
   Doraemon, el gat còsmic:
   Monster allergy:
   Una mà de contes:
