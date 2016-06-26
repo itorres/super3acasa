@@ -42,8 +42,7 @@ class TV3Downloader:
         }
         self.index = indexes[index]
         for d in self.config['dirs'].values():
-            if not path.exists(d):
-                makedirs(d)
+            makedirs(d, exist_ok=True)
         self.list()
 
     @property
@@ -85,12 +84,11 @@ class TV3Downloader:
         try:
             tots = soup.select('a[title="{}"]'
                                .format(self.index['tots']))[0].get('href')
+            soup = self._soup(self._ccma_url(tots))
         except IndexError:
             logger.error('No tag with title "{}" found'
                          .format(self.index['tots']))
-            import ipdb ; ipdb.set_trace()
-            raise
-        soup = self._soup(self._ccma_url(tots))
+            return
         self._get_videos(soup, serie)
         pages = self._get_pages(soup)
         for p in pages:
@@ -115,7 +113,13 @@ class TV3Downloader:
         with open(json_file, 'w') as f:
             json.dump(i, f, indent=2)
         for f in ['imatges', 'media', 'subtitols']:
-            url = i[f]['url']
+            try:
+                url = i[f]['url']
+            except KeyError:
+                continue
+            except TypeError as exc:
+                log.error('Error parsing {}: {} json: {}'.format(vid, exc, i))
+                continue
             bn = path.basename(url)
             fn = path.join(d, bn)
             self._dl(url, fn)
@@ -126,7 +130,11 @@ class TV3Downloader:
             size = int(r.headers['Content-Length'])/1024/1024
         except Exception:
             size = "Unknown"
+        if  path.exists(filepath):
+            logger.info('File Already exists {}'.format(filepath))
+            return
         logger.info('Downloading {} ({}MB) to {}'.format(url, size, filepath))
+
         with open(filepath, 'wb') as fd:
             for chunk in r.iter_content(1024*256):
                 fd.write(chunk)
@@ -163,9 +171,7 @@ class TV3Downloader:
 
 if __name__ == '__main__':
     dl = TV3Downloader('super3')
-#    dl.chapters('30 minuts')
-#    dl.chapters('Calimero')
-    dl.chapters('Codi: Lyoko')
+    for s in dl.series:
+        dl.chapters(s)
     for vid in dl.videos.keys():
         dl._dl_vid(vid)
-    import ipdb ; ipdb.set_trace()
