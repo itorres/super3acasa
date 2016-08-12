@@ -1,17 +1,43 @@
 ---
 dirs:
-  download: /tmp/tv3/d
-  index: /tmp/tv3/censor
-  publish: /Volumes/Verdura/Media/Video/Infantil
-publish:
-  Doraemon, el gat còsmic:
-  Monster allergy:
-  Una mà de contes:
-  Els Dalton:
-  El llibre de la selva:
-  Bob, el manetes:
-  Marsupilami:
-  Rekkit, el conill màgic:
-  L'hora del Timmy:
-  Doraemon: Doraemon, el gat còsmic
-  Ua man de condes: Una mà de contes
+  base: /nas/4TB2/Media/In/tv3
+  download: /nas/4TB2/Media/In/tv3/d
+  index: /nas/4TB2/Media/In/tv3/index
+  publish: /nas/4TB2/Media/Video/Infantil
+:publish:
+  "Doraemon, el gat còsmic":
+  "Doraemon": "Doraemon, el gat còsmic"
+  "Monster allergy":
+  "Monster Allergy": "Monster allergy"
+  "Una mà de contes":
+  "Ua man de condes": "Una mà de contes"
+  "Els Dalton":
+  "El llibre de la selva":
+  "Bob, el manetes":
+  "Bob el manetes": "Bob, el manetes"
+  "Bob, el manetes: a peu d'obra": "Bob, el manetes"
+  "Bob, el manetes: el Llampec al rescat": "Bob, el manetes"
+  "Marsupilami":
+  "Rekkit, el conill màgic":
+  "Rekkit rabbit": "Rekkit, el conill màgic"
+  "L'hora del Timmy":
+  "Geronimo Stilton":
+  "La vaca Connie":
+  "MIC":
+  "Mic": "MIC"
+  "Xilòfon i Mic en capsa": "MIC"
+  "Les noves aventures de Peter Pan":
+  "Zoobabu":
+  "Els caçadors d'elements":
+  "Els germans Kratt":
+  "Invizimals":
+  "LazyTown - Vilamandra":
+  "El xai Shaun":
+  "Rovelló":
+  "El carnaval de la Ventafocs (Rovelló)": "Rovelló"
+  "Teo":
+  "Monstres supersans":
+  "La vaca Connie":
+  "Les misterioses ciutats d'or":
+  "La casa d'Anubis":
+  "La Casa d'Anubis": "La casa d'Anubis"
