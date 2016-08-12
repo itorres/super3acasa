@@ -118,7 +118,8 @@ class TV3Downloader:
             except KeyError:
                 continue
             except TypeError as exc:
-                logger.error('Error parsing {}: {} json: {}'.format(vid, exc, i))
+                logger.error('Error parsing {}: {} json: {}'
+                             .format(vid, exc, i))
                 continue
             bn = path.basename(url)
             fn = path.join(d, bn)
@@ -126,14 +127,41 @@ class TV3Downloader:
 
     def _dl(self, url, filepath):
         r = requests.get(url, stream=True)
+        content_length = r.headers.get('Content-Length')
+        file_size = None
+        human_size = None
         try:
-            size = int(r.headers['Content-Length'])/1024/1024
-        except Exception:
-            size = "Unknown"
-        if  path.exists(filepath):
-            logger.info('File Already exists {}'.format(filepath))
-            return
-        logger.info('Downloading {} ({}MB) to {}'.format(url, size, filepath))
+            file_size = int(content_length)
+            human_size = "{0:.3f}MB".format(file_size/1024/1024)
+        except TypeError:
+            logger.error('Invalid Content-Length ({}) for {}'
+                         .format(content_length, url))
+
+        if path.exists(filepath):
+            if path.getsize(filepath) == file_size:
+                logger.info('Already got {} ({})'.format(filepath, human_size))
+                return
+            elif file_size:
+                if path.getsize(filepath) > file_size:
+                    logger.warning(
+                        'Local file {} ({}) is bigger than remote {} ({})'
+                        .format(
+                            filepath, path.getsize(filepath),
+                            url, file_size
+                        )
+                    )
+                    return
+                else:
+                    logger.warning(
+                        'Local file {} ({}) is smaller than remote {} ({})'
+                        .format(
+                            filepath, path.getsize(filepath),
+                            url, file_size
+                        )
+                    )
+
+        logger.info('Downloading {} ({}) to {}'
+                    .format(url, human_size, filepath))
 
         with open(filepath, 'wb') as fd:
             for chunk in r.iter_content(1024*256):
