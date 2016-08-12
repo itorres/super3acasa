@@ -118,7 +118,7 @@ class TV3Downloader:
             except KeyError:
                 continue
             except TypeError as exc:
-                log.error('Error parsing {}: {} json: {}'.format(vid, exc, i))
+                logger.error('Error parsing {}: {} json: {}'.format(vid, exc, i))
                 continue
             bn = path.basename(url)
             fn = path.join(d, bn)
