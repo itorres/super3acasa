@@ -112,9 +112,21 @@ class TV3Downloader:
         json_file = path.join(d, '{}.json'.format(vid))
         with open(json_file, 'w') as f:
             json.dump(i, f, indent=2)
-        for f in ['imatges', 'media', 'subtitols']:
+        for f in ['imatges', 'subtitols']:
             try:
                 url = i[f]['url']
+            except KeyError:
+                continue
+            except TypeError as exc:
+                logger.error('Error parsing {}: {} json: {}'
+                             .format(vid, exc, i))
+                continue
+            bn = path.basename(url)
+            fn = path.join(d, bn)
+            self._dl(url, fn)
+        for u in i['media']['url']:
+            try:
+                url = u['file']
             except KeyError:
                 continue
             except TypeError as exc:
