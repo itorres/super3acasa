@@ -1,5 +1,4 @@
 beautifulsoup4==4.4.1
-ipdb==0.10.1
 lxml==3.6.0
-PyYAML==3.11
-requests==2.10.0
+PyYAML>=4.2b1
+requests>=2.20.0
